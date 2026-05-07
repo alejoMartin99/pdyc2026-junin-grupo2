@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 //import org.apache.el.stream.Optional;
 import org.springframework.stereotype.Service;
 
+import pdyc.greater_events.dtos.ArtistaDto;
 import pdyc.greater_events.dtos.EventoDto;
 import pdyc.greater_events.entities.Artista;
 import pdyc.greater_events.entities.Evento;
@@ -34,6 +35,8 @@ public class EventoService {
         return devolverEventoDtoCreado(evento.getIdEvento()); //devuelvo el eventoDto;
     }
 
+    //actualizo el evento segun el id, que debe pertenecer a un evento. 
+    //Y el evento para actualizarse debe estar en estado Tentative.
     public EventoDto actEvento(Long id, EventoDto eventoDto){
         Evento evento = repository.findByIdEvento(id);
         if (evento == null) {
@@ -53,6 +56,7 @@ public class EventoService {
         return devolverEventoDtoPorId(actualizado.getIdEvento());
     }
 
+    //listo los eventos segun su estado y sino los listo a todos.
     public List<EventoDto> devolverEventos(EventState state){
         List<Evento> eventos = (state != null)
             ? repository.findByEventState(state)
@@ -60,6 +64,7 @@ public class EventoService {
         return transformarDto(eventos);
     }
 
+    //elimino evento por ID si este se encuentra y esta en estado Tentative.
     public boolean eliminarEvento(Long id) {
         Evento evento = repository.findByIdEvento(id);
         if (evento == null) {
@@ -73,9 +78,10 @@ public class EventoService {
         repository.delete(evento);
         return true;
     }
-
+    //remuesto a un art de un evento. Solo se remueve un artista si el evento esta en Tentative.
     public EventoDto removerArtista(Long eventId, Long idArtista) {
         Evento evento = repository.findByIdEvento(eventId);
+        Boolean artistaEncontrado = false;
         if (evento == null) {
             throw new EventoException("Evento no encontrado");
         }
@@ -83,12 +89,22 @@ public class EventoService {
         if (evento.getEventState() != EventState.Tentative) {
             throw new EventoException("Solo se pueden remover artistas de eventos en estado Tentative");
         }
+        //recorro los artistas y cuando encuentro al artista a eliminar, lo borro de la bd.
+        for(Artista art : evento.getArtistas()){
+            if(art.getIdArtista().equals(idArtista)){
+                artistaEncontrado = true;
+                evento.getArtistas().remove(art);
+                repository.save(evento);
+            }
+        }
 
-        evento.getArtistas().removeIf(a -> a.getIdArtista().equals(idArtista));
-        repository.save(evento);
+        if (!artistaEncontrado) {
+            throw new EventoException("Artista no encontrado en el evento");
+        }
+
         return devolverEventoDtoPorId(eventId);
     }
-
+    //confirmo un evento, solo se pueden confirmar eventos en estado Tentative.
     public EventoDto confirmarEvento(Long id) {
         Evento evento = repository.findByIdEvento(id);
         if (evento == null) {
@@ -103,7 +119,8 @@ public class EventoService {
         repository.save(evento);
         return devolverEventoDtoPorId(id);
     }
-
+    //solo se pueden reprogramar eventos en estado Confirmed o Reprogrammed, 
+    // y la nueva fecha debe ser igual o posterior a la fecha original del evento.
     public EventoDto reprogramarEvento(Long id, LocalDate nuevaFecha) {
         Evento evento = repository.findByIdEvento(id);
         if (evento == null) {
@@ -115,7 +132,7 @@ public class EventoService {
             throw new EventoException("Solo se pueden reprogramar eventos en estado Confirmed o Rescheduled");
         }
 
-        if(evento.getEventState() == EventState.Confirmed){
+        if(evento.getEventState() == EventState.Confirmed || evento.getEventState() == EventState.Rescheduled){
             if (nuevaFecha.isBefore(evento.getFechaRealizacion())) {
                 throw new EventoException("La nueva fecha debe ser igual o posterior a la fecha original del evento");
             }
@@ -159,9 +176,7 @@ public class EventoService {
     }
 
     public EventoDto devolverEventoDtoPorId(Long id){
-        Evento evento = repository.findByIdEvento(id);
-        EventoDto eventoDto = new EventoDto(evento.getNombre(),evento.getFechaRealizacion(),evento.getEventState(),evento.getArtistas().size());
-        return eventoDto;
+        return devolverEventoDtoCreado(id);
     }
 
     public EventoDto devolverEventoDtoCreado(Long id){

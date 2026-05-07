@@ -61,7 +61,7 @@ public class ArtistaService {
         Artista artist = repository.findById(id)
             .orElseThrow(() -> new ArtistaException("Artista no encontrado")); //lanzo excepcion sino encuentro al artista
 
-        if (artist.getEventos().isEmpty()) { //si esta asociado a eventos, se desactiva y se elimina
+        if (artist.getEventos().isEmpty()) { //si no esta asociado a eventos, se desactiva y se elimina
             artist.setActivo(false);
             repository.delete(artist);
         }

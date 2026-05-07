@@ -13,18 +13,28 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import pdyc.greater_events.enums.Genero;
 
-
+//creo a artista como entidad, con su tabla en la bd.
 @Entity
 @Table(name = "artistas")
 public class Artista {
 
+    //creo el id idArtista como PK y que sea autoincrementable.
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idArtista;
+    //nombre del artista
     private String nombre;
+    //genero musical del artista, el cual es un enum.
     @Enumerated(EnumType.STRING)
     private Genero genero;
+
+    //estado del artista (activo o no), si esta activo es porque esta 
+    // asociado a un evento/ eventos.
     private Boolean activo = false;
 
+    //un artista tiene una coleccion de eventos.
+    @ManyToMany(mappedBy = "artistas") 
+    //mi tabla artistas es dueña de la relacion con eventos.
+    private List<Evento> eventos = new ArrayList<>();
     
 
     public Artista() {
@@ -68,9 +78,6 @@ public class Artista {
     public void setGenero(Genero genero) {
         this.genero = genero;
     }
-  
-    @ManyToMany(mappedBy = "artistas")
-    private List<Evento> eventos = new ArrayList<>();
 
     public Long getIdArtista() {
         return idArtista;

@@ -1,19 +1,15 @@
 package pdyc.greater_events.dtos;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import pdyc.greater_events.entities.Artista;
-//import pdyc.greater_events.entities.StateEvento;
 import pdyc.greater_events.enums.EventState;
 
+//DTO para que el usuario veo lo que yo quiero respecto a un evento.
 public class EventoDto {
     private String nombreDto;
     private String descripcionDto;
     private LocalDate fechaRealizacionDto;
     private EventState estadoDto;
     private int cantArtistas;
-    //private List<Artista> artistasDto;
 
     public EventoDto(){}
 

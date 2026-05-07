@@ -14,28 +14,31 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import pdyc.greater_events.enums.EventState;
-
+//creo a evento como entidad, con su tabla en la bd.
 @Entity
 @Table(name = "evento")
 public class Evento {
-
+  //creo el id idEvento como PK y que sea autoincrementable.
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long idEvento;
-
+  
   private String nombre;
   private String descripcion;
   private LocalDate fechaRealizacion;
 
+  //declaro a EventState en la BD como un enum, y lo guardo como un string.
   @Enumerated(EnumType.STRING)
   private EventState eventState;
 
   @ManyToMany
   @JoinTable(
       name = "event_artist",
-      joinColumns = @JoinColumn(name = "event_id"),
-      inverseJoinColumns = @JoinColumn(name = "artist_id")
+      joinColumns = @JoinColumn(name = "event_id"), //representa a la clave foranea de esta entidad, que es evento
+      inverseJoinColumns = @JoinColumn(name = "artist_id")//representa a la clave foranea de la entidad artista.
+
   )
+  //coleccion de artistas.
   private List<Artista> artistas = new ArrayList<>();
 
   public Evento(){}
@@ -47,6 +50,8 @@ public class Evento {
     this.eventState = eventState;
   }
 
+
+  // getters y setters
   public String getNombre() {
     return nombre;
   }
@@ -94,6 +99,4 @@ public class Evento {
   public void setIdEvento(Long idEvento) {
     this.idEvento = idEvento;
   }
-
-  // getters y setters
 }
