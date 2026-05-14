@@ -41,7 +41,7 @@ public class ArtistaController {
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
     //endpoint para eliminar un artista, recibe el id del artista a eliminar
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteArtist/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteArtist(id);
         return ResponseEntity.noContent().build();
