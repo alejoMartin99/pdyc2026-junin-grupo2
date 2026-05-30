@@ -31,10 +31,10 @@ public class KeycloakAdminController {
         return keycloakAdminService.listUsers().thenApply(ResponseEntity::ok);
     }
 
-    @PostMapping("/users")
+    @PostMapping("/create-admin")
     public CompletableFuture<ResponseEntity<AdminUserDto>> createUser(@RequestBody AdminUserRequestDto request) {
-        return keycloakAdminService.createUser(request)
-                .thenApply(ResponseEntity::ok);
+        return keycloakAdminService.createAdminUser(request)
+            .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/users/{id}")
@@ -43,3 +43,11 @@ public class KeycloakAdminController {
                 .thenApply(ignored -> ResponseEntity.noContent().build());
     }
 }
+
+
+/*KeycloakAdminController
+Endpoints protegidos para admin (/admin/keycloak/users).
+
+GET /admin/keycloak/users: lista usuarios (requiere rol ADMIN)
+POST /admin/keycloak/users: crea usuario admin (requiere rol ADMIN) → llama a createAdminUser()
+DELETE /admin/keycloak/users/{id}: borra usuario (requiere rol ADMIN) */

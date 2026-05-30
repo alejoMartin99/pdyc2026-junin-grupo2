@@ -47,3 +47,6 @@ public class ArtistaController {
         return ResponseEntity.noContent().build();
     }
 }
+
+
+//Solo puede acceder un admin a este controlador.

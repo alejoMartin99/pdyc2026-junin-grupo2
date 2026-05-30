@@ -186,6 +186,10 @@ public class EventoService {
 
     }
 
+    public Evento findById(Long id) {
+        return repository.findByIdEvento(id);
+    }
+
     //transformo la lista de clase Evento a una de List<EventoDto>, en donde 
     // muestro nombre, fecha, estado y la cantidad de artistas
     public List<EventoDto> transformarDto(List<Evento> eventos){

@@ -137,3 +137,5 @@ public class EventoController {
 
 }
   
+
+//Solo puede acceder un admin a este controlador.
