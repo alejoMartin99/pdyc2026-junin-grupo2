@@ -22,12 +22,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) //desactivo esto ya que no uso cookies de sesión.
             //autoriza quien puede acceder a los endpoints.
-            .authorizeHttpRequests(authorize -> authorize
+           .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.GET, "/artists", "/events").permitAll()
                 .requestMatchers(HttpMethod.GET, "/artists/*/events", "/events/*").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/me/**").authenticated()
+                .requestMatchers("/admin/**").hasRole("ADMIN") 
+                .requestMatchers("/me/**").hasAnyRole("ADMIN", "USER") 
+                .requestMatchers("/artists/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/events/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter())));

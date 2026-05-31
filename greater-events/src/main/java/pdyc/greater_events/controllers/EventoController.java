@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@RequestMapping("/admin/events")
+@RequestMapping("/events")
 public class EventoController {
   @Autowired
   private EventoService eventoService;

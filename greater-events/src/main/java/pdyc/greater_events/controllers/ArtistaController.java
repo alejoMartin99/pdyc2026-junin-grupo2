@@ -12,7 +12,7 @@ import pdyc.greater_events.enums.Genero;
 import pdyc.greater_events.services.ArtistaService;
 
 @RestController
-@RequestMapping("/admin/artists")
+@RequestMapping("/artists")
 public class ArtistaController {
 
     @Autowired
